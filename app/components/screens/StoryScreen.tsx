@@ -31,22 +31,39 @@ export function StoryScreen({ isActive, stories }: StoryScreenProps) {
             [list[i], list[j]] = [list[j], list[i]];
         }
         return list;
-    }, [stories]); // Only reshuffle if the source data actually changes
+    }, []); // Empty dependency array ensures this ONLY runs once per component mount
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0);
 
     // Auto-advance logic
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
+
     useEffect(() => {
         if (!isActive || shuffledStories.length <= 1) return;
 
-        const timer = setInterval(() => {
+        // Clear any existing timer
+        if (timerRef.current) clearInterval(timerRef.current);
+
+        timerRef.current = setInterval(() => {
             setDirection(1);
             setCurrentIndex((prev) => (prev + 1) % shuffledStories.length);
         }, 5000); // 5 seconds per slide
 
-        return () => clearInterval(timer);
-    }, [isActive, shuffledStories.length]); const slideVariants = {
+        return () => {
+            if (timerRef.current) clearInterval(timerRef.current);
+        };
+    }, [isActive, shuffledStories.length]);
+
+    const resetTimer = () => {
+        if (timerRef.current) clearInterval(timerRef.current);
+        timerRef.current = setInterval(() => {
+            setDirection(1);
+            setCurrentIndex((prev) => (prev + 1) % shuffledStories.length);
+        }, 5000);
+    };
+
+    const slideVariants = {
         enter: (direction: number) => ({
             x: direction > 0 ? 1000 : -1000,
             opacity: 0,
@@ -73,6 +90,8 @@ export function StoryScreen({ isActive, stories }: StoryScreenProps) {
 
     const paginate = (newDirection: number) => {
         if (shuffledStories.length === 0) return;
+
+        resetTimer(); // Reset auto-advance timer on interaction
 
         setDirection(newDirection);
         setCurrentIndex((prevIndex) => {
