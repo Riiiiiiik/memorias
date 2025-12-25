@@ -105,7 +105,7 @@ export function LoveReasonButton() {
         <>
             {/* Floating Button */}
             <motion.button
-                className="fixed bottom-6 left-6 z-50 group flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 w-14 h-14 rounded-full shadow-2xl transition-all"
+                className="fixed bottom-24 right-6 md:bottom-8 md:right-8 z-[100] group flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 w-14 h-14 rounded-full shadow-2xl transition-all"
                 onClick={showReason}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}

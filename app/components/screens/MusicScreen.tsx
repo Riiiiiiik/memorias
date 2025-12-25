@@ -38,11 +38,73 @@ const PLAYLIST = [
 
 export function MusicScreen({ isActive }: MusicScreenProps) {
     const [currentSong, setCurrentSong] = useState(PLAYLIST[0]);
+    // Use a ref to hold the player instance
+    const playerRef = React.useRef<any>(null);
 
-    // Generate YouTube embed URL with autoplay
-    // We add origin to help with iOS restrictions and ensure better API support
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    const embedUrl = `https://www.youtube.com/embed/${currentSong.videoId}?autoplay=1&controls=1&modestbranding=1&playsinline=1&rel=0&enablejsapi=1&origin=${origin}`;
+    // When the song changes, if we have a player, load the new video
+    // This maintains the "blessed" user interaction state on iOS
+    const handleSongChange = (song: typeof PLAYLIST[0]) => {
+        setCurrentSong(song);
+        if (playerRef.current) {
+            playerRef.current.loadVideoById(song.videoId);
+        }
+    };
+
+    // Initialize the YouTube player using the IFrame API
+    React.useEffect(() => {
+        // Load YouTube IFrame API if not already loaded
+        if (!(window as any).YT) {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+        }
+
+        // Define global callback
+        (window as any).onYouTubeIframeAPIReady = () => {
+            if (activeTab === 'music' || true) { // Initialize regardless to be ready
+                createPlayer();
+            }
+        };
+
+        // If API is already ready, just create player
+        if ((window as any).YT && (window as any).YT.Player) {
+            createPlayer();
+        }
+
+        function createPlayer() {
+            // Destroy existing if any to avoid duplicates (though we try to reuse)
+            if (playerRef.current) return;
+
+            playerRef.current = new (window as any).YT.Player('youtube-player', {
+                height: '100%',
+                width: '100%',
+                videoId: currentSong.videoId,
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 1,
+                    'modestbranding': 1,
+                    'playsinline': 1, // Crucial for iOS
+                    'rel': 0,
+                    'origin': window.location.origin
+                },
+                events: {
+                    'onReady': (event: any) => {
+                        // event.target.playVideo(); // Auto-play on load might be blocked initially
+                    }
+                }
+            });
+        }
+
+        return () => {
+            // Cleanup? Ideally we keep it, but for SPA navigation we might need to destroy
+            // For now, let's keep it simple.
+        };
+    }, []);
+
+    // Re-sync player if it exists (e.g. if we switched tabs and came back, though we are keeping it mounted)
+    // Actually, since MobileAppShell keeps specific screens mounted but hidden, 
+    // we don't need to destroy/recreate. The ref should persist.
 
     return (
         <div className={cn("app-screen flex flex-col items-center justify-start h-full w-full absolute top-0 left-0 transition-opacity duration-300 pt-10 overflow-y-auto pb-24",
@@ -56,13 +118,7 @@ export function MusicScreen({ isActive }: MusicScreenProps) {
 
                 {/* Video Container (Native YouTube Embed) */}
                 <div className="w-full aspect-video bg-[#1a1b2e] rounded-2xl mb-8 shadow-2xl relative overflow-hidden ring-1 ring-white/10">
-                    <iframe
-                        key={currentSong.videoId}
-                        src={embedUrl}
-                        className="absolute inset-0 w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    />
+                    <div id="youtube-player" className="absolute inset-0 w-full h-full" />
                 </div>
 
                 {/* Current Song Info */}
@@ -78,7 +134,7 @@ export function MusicScreen({ isActive }: MusicScreenProps) {
                     {PLAYLIST.map((song, index) => (
                         <button
                             key={index}
-                            onClick={() => setCurrentSong(song)}
+                            onClick={() => handleSongChange(song)}
                             className={cn(
                                 "w-full flex items-center p-3 rounded-xl transition-all text-left group",
                                 currentSong.videoId === song.videoId
