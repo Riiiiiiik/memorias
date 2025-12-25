@@ -105,16 +105,7 @@ export function HomeScreen({ isActive, onNavigateToGallery }: HomeScreenProps) {
                     </div>
                 </div>
 
-                {isRevealed && (
-                    <div className="animate-bounce mt-8">
-                        <button
-                            onClick={onNavigateToGallery}
-                            className="flex items-center gap-2 px-6 py-3 bg-[#d81b60] text-white rounded-full font-bold shadow-lg hover:bg-[#ad1457] transition-colors"
-                        >
-                            Ver Nossas Memórias <ArrowRight size={20} />
-                        </button>
-                    </div>
-                )}
+
             </div>
 
             {/* Floating Reason Button */}
