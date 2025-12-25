@@ -110,15 +110,7 @@ export function StoryScreen({ isActive, stories }: StoryScreenProps) {
                     isActive ? "opacity-100 z-10" : "opacity-0 -z-10 pointer-events-none"
                 )}
             >
-                {/* Admin Button */}
-                {isActive && (
-                    <Link
-                        href="/admin"
-                        className="fixed top-4 right-4 z-[90] p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all duration-200 group"
-                    >
-                        <Settings size={20} className="text-purple-600 group-hover:rotate-90 transition-transform duration-300" />
-                    </Link>
-                )}
+
 
                 <div className="text-center text-white/50 p-8">
                     <div className="text-6xl mb-4">📖</div>
@@ -140,15 +132,7 @@ export function StoryScreen({ isActive, stories }: StoryScreenProps) {
                 isActive ? "opacity-100 z-10" : "opacity-0 -z-10 pointer-events-none"
             )}
         >
-            {/* Admin Button */}
-            {isActive && (
-                <Link
-                    href="/admin"
-                    className="fixed top-4 right-4 z-[90] p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all duration-200 group"
-                >
-                    <Settings size={20} className="text-purple-600 group-hover:rotate-90 transition-transform duration-300" />
-                </Link>
-            )}
+
 
             {/* Progress Indicators */}
             <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
