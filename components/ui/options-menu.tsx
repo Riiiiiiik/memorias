@@ -47,17 +47,7 @@ export function OptionsMenu({ onShowReason, onLogin, isLoggedIn = false, isAdmin
                                 <span className="text-sm font-medium">Cupons de Amor</span>
                             </Link>
 
-                            {/* Precisa de um motivo */}
-                            <button
-                                onClick={() => {
-                                    setIsOpen(false);
-                                    onShowReason?.();
-                                }}
-                                className="w-full flex items-center gap-3 px-3 py-2 text-white hover:bg-white/10 rounded-lg transition-colors"
-                            >
-                                <Heart className="w-4 h-4 text-pink-400" />
-                                <span className="text-sm font-medium">Precisa de um motivo?</span>
-                            </button>
+
 
                             {/* Divider */}
                             <div className="h-px bg-white/10 my-1 mx-2" />

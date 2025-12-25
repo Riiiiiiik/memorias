@@ -1,10 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
+import { logout } from "@/app/auth/actions";
 import { Memory } from "@/components/carousel/memory-card";
-import PrismaticBurst from "@/components/ui/PrismaticBurst";
-import { EditableText } from "@/components/ui/editable-text";
 import { getSiteContent } from "@/app/actions/content";
-import { PageContent } from "@/components/page-content";
-import { OptionsMenuWithReason } from "@/components/ui/options-menu-with-reason";
+import { MobileAppShell } from "@/app/components/MobileAppShell";
 
 // Demo Data (Fallback)
 const DEMO_MEMORIES: Memory[] = [
@@ -37,6 +35,16 @@ export default async function Home() {
     console.error("Erro ao buscar memórias:", error);
   }
 
+  // Fetch Stories for Parallax Scrollytelling
+  const { data: realStories, error: storiesError } = await supabase
+    .from("stories")
+    .select("*")
+    .order("order_index", { ascending: true });
+
+  if (storiesError) {
+    console.error("Erro ao buscar stories:", storiesError);
+  }
+
   // Use real data if available, otherwise show demo
   const displayMemories = (realMemories && realMemories.length > 0)
     ? realMemories.map(m => ({
@@ -49,44 +57,14 @@ export default async function Home() {
     }))
     : DEMO_MEMORIES;
 
+  const displayStories = realStories || [];
+
   return (
-    <main className="relative min-h-screen bg-black">
-      {/* Background gradients */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <PrismaticBurst
-          animationType="rotate3d"
-          intensity={2}
-          speed={0.5}
-          distort={1.0}
-          paused={false}
-          offset={{ x: 0, y: 0 }}
-          hoverDampness={0.25}
-          rayCount={24}
-          mixBlendMode="lighten"
-          colors={['#ff007a', '#4d3dff', '#ffffff']}
-        />
-      </div>
-
-      {/* Page Content with Draggable Sections */}
-      <PageContent
-        initialMemories={displayMemories}
-        content={content}
-        hasRealMemories={!!realMemories?.length}
-      />
-
-      {/* FOOTER */}
-      <footer className="relative z-10 py-12 text-center text-white/30 text-sm pb-20 max-w-5xl mx-auto">
-        <EditableText
-          contentKey="footer_text"
-          initialValue={content.footer_text || `Feito com todo o meu amor © ${new Date().getFullYear()}`}
-          as="p"
-        />
-        <div className="mt-4">
-          <a href="/admin" className="text-white/10 hover:text-white/40 transition-colors p-2 text-xs uppercase tracking-widest">
-            Admin Area
-          </a>
-        </div>
-      </footer>
-    </main>
+    <MobileAppShell
+      initialMemories={displayMemories}
+      content={content}
+      hasRealMemories={!!realMemories?.length}
+      stories={displayStories}
+    />
   );
 }

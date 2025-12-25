@@ -10,6 +10,8 @@ import { LivingCounter } from "@/components/ui/living-counter";
 import { createClient } from '@/lib/supabase/client';
 import { LoginModal } from "@/components/auth/login-modal";
 import { LoveReasonButton } from "@/app/components/love-reason-button";
+import { FloatingSurpriseButton } from "@/components/floating-surprise-button";
+import { TimeCapsuleButton } from "@/app/components/time-capsule-button";
 
 interface PageContentProps {
     initialMemories: Memory[];
@@ -17,7 +19,7 @@ interface PageContentProps {
     hasRealMemories: boolean;
 }
 
-const SECTION_ORDER = ['hero', 'dedication', 'soundtrack', 'timeline'];
+const SECTION_ORDER = ['hero', 'time_capsule', 'dedication', 'soundtrack', 'timeline'];
 
 export function PageContent({ initialMemories, content, hasRealMemories }: PageContentProps) {
     const [timelineSpacing, setTimelineSpacing] = useState(3);
@@ -54,6 +56,8 @@ export function PageContent({ initialMemories, content, hasRealMemories }: PageC
 
                 {/* Floating "Reason" Button */}
                 <LoveReasonButton />
+                {/* Floating Surprise Button */}
+                <FloatingSurpriseButton />
 
                 <div className="w-full max-w-md text-center space-y-8">
                     <div className="space-y-2 mb-8 z-20 relative">
@@ -88,6 +92,30 @@ export function PageContent({ initialMemories, content, hasRealMemories }: PageC
                         </div>
                     </div>
                 </div>
+            </section>
+        ),
+        time_capsule: (
+            <section key="time_capsule" className="py-8 px-4 flex justify-center z-20 relative">
+                <TimeCapsuleButton
+                    targetDate={content.time_capsule_date || "2025-12-31T00:00:00"}
+                    title={content.time_capsule_title || "Cápsula do Tempo"}
+                    description={content.time_capsule_description || "Uma mensagem especial para o futuro."}
+                >
+                    <div className="space-y-6 text-center">
+                        <EditableText
+                            contentKey="time_capsule_header"
+                            initialValue={content.time_capsule_header || "Para quando o momento chegar..."}
+                            as="h3"
+                            className="text-2xl font-serif text-pink-300"
+                        />
+                        <EditableText
+                            contentKey="time_capsule_body"
+                            initialValue={content.time_capsule_body || "Escreva aqui sua mensagem secreta ou carta de aniversário. Ela ficará guardada até a data escolhida!"}
+                            as="p"
+                            className="text-white/80 leading-relaxed whitespace-pre-line"
+                        />
+                    </div>
+                </TimeCapsuleButton>
             </section>
         ),
         dedication: (
@@ -192,8 +220,7 @@ export function PageContent({ initialMemories, content, hasRealMemories }: PageC
                         <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Hoje</span>
                         <h3 className="text-xl text-white mt-1 mb-8">E contando...</h3>
 
-                        {/* Living Counter with default date (Sept 25, 2023 based on '2 anos e 3 meses' example logic roughly? Or just use a prop if we had one) */}
-                        {/* Assuming a relationship start date. I'll use a placeholder date that the user should update via admin later or hardcode request */}
+                        {/* Living Counter with default date */}
                         <div className="mt-4">
                             <LivingCounter startDate="2025-06-09" />
                         </div>
