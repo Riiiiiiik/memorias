@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Merriweather, Dancing_Script } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -10,6 +10,18 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const merriweather = Merriweather({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+});
+
+const dancingScript = Dancing_Script({
+  variable: "--font-handwriting",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -23,11 +35,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${merriweather.variable} ${dancingScript.variable} antialiased bg-black`}
       >
-        {children}
+        {/* Mobile Phone Frame */}
+        <div className="min-h-screen flex items-center justify-center p-4">
+          <div className="relative w-full max-w-[390px] h-[calc(100vh-32px)] max-h-[844px] bg-slate-950 rounded-[40px] overflow-hidden shadow-2xl border-4 border-slate-800">
+            {/* Phone Notch */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-black rounded-b-2xl z-[100]" />
+
+            {/* Content Area */}
+            <div className="h-full overflow-y-auto overflow-x-hidden">
+              {children}
+            </div>
+
+            {/* Home Indicator */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full z-[100]" />
+          </div>
+        </div>
       </body>
     </html>
   );
