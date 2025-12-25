@@ -116,7 +116,7 @@ export function TimerScreen({ isActive }: TimerScreenProps) {
                         <span className="text-[#a855f7] text-[10px] font-bold tracking-widest uppercase mb-1 block">Primeira Viagem</span>
                         <h3 className="text-white text-lg font-bold mb-1">Nossa Aventura</h3>
                         <p className="text-gray-400 text-xs leading-relaxed">
-                            Descobrindo novos lugares e criando memórias inesquecíveis.
+                            Descobrindo cada vez mais que o meu lugar é com você.
                         </p>
                     </div>
 
