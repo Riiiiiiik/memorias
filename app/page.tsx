@@ -51,8 +51,8 @@ export default async function Home() {
 
   return (
     <main className="relative min-h-screen bg-black">
-      {/* Background gradients - Constrained to Phone Width (Fixed Wallpaper) */}
-      <div className="fixed top-0 bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[414px] z-0 overflow-hidden border-x border-white/10">
+      {/* Background gradients */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
         <PrismaticBurst
           animationType="rotate3d"
           intensity={2}
@@ -75,7 +75,7 @@ export default async function Home() {
       />
 
       {/* FOOTER */}
-      <footer className="relative z-10 py-12 text-center text-white/30 text-sm pb-20 max-w-[414px] mx-auto">
+      <footer className="relative z-10 py-12 text-center text-white/30 text-sm pb-20 max-w-5xl mx-auto">
         <EditableText
           contentKey="footer_text"
           initialValue={content.footer_text || `Feito com todo o meu amor © ${new Date().getFullYear()}`}

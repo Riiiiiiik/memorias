@@ -54,11 +54,17 @@ const FALLBACK_REASONS = [
     "Te amo porque tu existes — e só isso já é motivo suficiente."
 ];
 
+import { LoginModal } from '@/components/auth/login-modal';
+
+// ... (imports)
+
 export function OptionsMenuWithReason() {
     const [reasons, setReasons] = useState<string[]>([]);
     const [currentReason, setCurrentReason] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const supabase = createClient();
 
     useEffect(() => {
@@ -75,7 +81,13 @@ export function OptionsMenuWithReason() {
             }
         }
 
+        async function checkUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            setIsLoggedIn(!!user);
+        }
+
         fetchReasons();
+        checkUser();
     }, [supabase]);
 
     const showReason = () => {
@@ -100,7 +112,17 @@ export function OptionsMenuWithReason() {
 
     return (
         <>
-            <OptionsMenu onShowReason={showReason} />
+            <OptionsMenu
+                onShowReason={showReason}
+                onLogin={() => setIsLoginOpen(true)}
+                isLoggedIn={isLoggedIn}
+            />
+
+            <LoginModal
+                isOpen={isLoginOpen}
+                onClose={() => setIsLoginOpen(false)}
+            />
+
 
             {/* Love Reason Modal */}
             <AnimatePresence>

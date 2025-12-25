@@ -117,7 +117,7 @@ void main(){
       hoverMat = rotY(ang.y) * rotX(ang.x);
     }
 
-    for (int i = 0; i < 44; ++i) {
+    for (int i = 0; i < 20; ++i) {
         vec3 P = marchT * dir;
         P.z -= 2.0;
         float rad = length(P);
@@ -251,7 +251,7 @@ const PrismaticBurst = ({
         const container = containerRef.current as HTMLDivElement;
         if (!container) return;
 
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = 1; // Cap at 1 for improved mobile performance
         // @ts-ignore
         const renderer = new Renderer({
             dpr,
