@@ -3,10 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { ScratchCard } from "@/components/scratch-card";
 import { LoveReasonButton } from "../love-reason-button";
-import { Sparkles, ArrowRight, Settings } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import Confetti from "react-confetti";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 interface HomeScreenProps {
     isActive: boolean;
@@ -60,15 +59,7 @@ export function HomeScreen({ isActive, onNavigateToGallery }: HomeScreenProps) {
                 </div>
             )}
 
-            {/* Admin Button */}
-            {isActive && (
-                <Link
-                    href="/admin"
-                    className="absolute top-4 right-4 z-[90] p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all duration-200 group"
-                >
-                    <Settings size={20} className="text-pink-600 group-hover:rotate-90 transition-transform duration-300" />
-                </Link>
-            )}
+
 
             <div className="z-10 text-center space-y-6 flex flex-col items-center w-full max-w-md">
                 <div className="space-y-2">
