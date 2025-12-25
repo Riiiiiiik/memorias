@@ -40,7 +40,9 @@ export function MusicScreen({ isActive }: MusicScreenProps) {
     const [currentSong, setCurrentSong] = useState(PLAYLIST[0]);
 
     // Generate YouTube embed URL with autoplay
-    const embedUrl = `https://www.youtube.com/embed/${currentSong.videoId}?autoplay=1&controls=1&modestbranding=1&playsinline=1`;
+    // We add origin to help with iOS restrictions and ensure better API support
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const embedUrl = `https://www.youtube.com/embed/${currentSong.videoId}?autoplay=1&controls=1&modestbranding=1&playsinline=1&rel=0&enablejsapi=1&origin=${origin}`;
 
     return (
         <div className={cn("app-screen flex flex-col items-center justify-start h-full w-full absolute top-0 left-0 transition-opacity duration-300 pt-10 overflow-y-auto pb-24",
