@@ -65,21 +65,21 @@ export function StoryScreen({ isActive, stories }: StoryScreenProps) {
 
     const slideVariants = {
         enter: (direction: number) => ({
-            x: direction > 0 ? 1000 : -1000,
+            x: direction > 0 ? '100%' : '-100%',
             opacity: 0,
-            scale: 0.8
+            scale: 0.9, // Less scaling change
         }),
         center: {
             zIndex: 1,
             x: 0,
             opacity: 1,
-            scale: 1
+            scale: 1,
         },
         exit: (direction: number) => ({
             zIndex: 0,
-            x: direction < 0 ? 1000 : -1000,
+            x: direction < 0 ? '100%' : '-100%',
             opacity: 0,
-            scale: 0.8
+            scale: 0.9,
         })
     };
 
@@ -164,13 +164,13 @@ export function StoryScreen({ isActive, stories }: StoryScreenProps) {
                         animate="center"
                         exit="exit"
                         transition={{
-                            x: { type: "spring", stiffness: 300, damping: 30 },
-                            opacity: { duration: 0.2 }
+                            x: { type: "spring", stiffness: 200, damping: 25 }, // Softer spring
+                            opacity: { duration: 0.3 }
                         }}
                         drag="x"
                         dragConstraints={{ left: 0, right: 0 }}
                         dragElastic={1}
-                        style={{ touchAction: "none" }}
+                        style={{ touchAction: "none", willChange: "transform" }} // Hardware accel
                         onDragEnd={(e, { offset, velocity }) => {
                             const swipe = swipePower(offset.x, velocity.x);
 
