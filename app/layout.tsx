@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Merriweather, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import PrismaticBurst from "./components/PrismaticBurst";
+import RegisterSW from "./components/RegisterSW";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,6 +62,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${merriweather.variable} ${dancingScript.variable} antialiased min-h-screen overscroll-none`}
       >
+        <RegisterSW />
         <div className="fixed inset-0 -z-10 w-full h-full pointer-events-none bg-black">
           <PrismaticBurst
             animationType="rotate3d"
