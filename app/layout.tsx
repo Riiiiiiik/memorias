@@ -28,11 +28,15 @@ const dancingScript = Dancing_Script({
 export const metadata: Metadata = {
   title: "Memorias",
   description: "Uma coleção de nossos momentos especiais",
-  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Memorias",
+  },
+  icons: {
+    apple: [
+      { url: '/apple-icon', sizes: '180x180', type: 'image/png' },
+    ],
   },
   formatDetection: {
     telephone: false,

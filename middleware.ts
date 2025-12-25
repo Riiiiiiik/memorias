@@ -33,6 +33,9 @@ export async function middleware(request: NextRequest) {
 
     // Public Routes (always allowed)
     const isPublicRoute = request.nextUrl.pathname === '/login' ||
+        request.nextUrl.pathname === '/manifest.webmanifest' ||
+        request.nextUrl.pathname === '/icon' ||
+        request.nextUrl.pathname === '/apple-icon' ||
         request.nextUrl.pathname.startsWith('/api/') || // Allow APIs (they should handle their own auth if needed)
         request.nextUrl.pathname.startsWith('/_next');
 
@@ -70,8 +73,9 @@ export const config = {
          * - _next/static (static files)
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
+         * - manifest.webmanifest (PWA manifest)
          * Feel free to modify this pattern to include more paths.
          */
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+        '/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 }
