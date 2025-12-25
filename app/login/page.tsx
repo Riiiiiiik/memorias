@@ -27,7 +27,7 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
             <div className="w-full max-w-sm glass-card p-8 rounded-2xl border border-white/10">
-                <h1 className="text-2xl font-bold text-white text-center mb-6">Acesso Admin</h1>
+                <h1 className="text-2xl font-bold text-white text-center mb-6">Bem-vindo(a)</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
@@ -37,7 +37,7 @@ export default function LoginPage() {
                             type="email"
                             required
                             className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
-                            placeholder="admin@exemplo.com"
+                            placeholder="email@exemplo.com"
                         />
                     </div>
 
