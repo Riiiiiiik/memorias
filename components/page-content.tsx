@@ -6,6 +6,9 @@ import { StackCarousel } from "@/components/carousel/stack";
 import { EditableText } from "@/components/ui/editable-text";
 import { YouTubePlayer } from "@/components/youtube-player";
 import { OptionsMenuWithReason } from "@/components/ui/options-menu-with-reason";
+import { LivingCounter } from "@/components/ui/living-counter";
+import { createClient } from '@/lib/supabase/client';
+import { LoginModal } from "@/components/auth/login-modal";
 
 interface PageContentProps {
     initialMemories: Memory[];
@@ -14,11 +17,6 @@ interface PageContentProps {
 }
 
 const SECTION_ORDER = ['hero', 'dedication', 'soundtrack', 'timeline'];
-
-import { createClient } from '@/lib/supabase/client';
-import { LoginModal } from "@/components/auth/login-modal";
-
-// ... imports
 
 export function PageContent({ initialMemories, content, hasRealMemories }: PageContentProps) {
     const [timelineSpacing, setTimelineSpacing] = useState(3);
@@ -188,10 +186,13 @@ export function PageContent({ initialMemories, content, hasRealMemories }: PageC
                     <div className="relative pl-10">
                         <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-indigo-500 border-4 border-[#0f172a]" />
                         <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Hoje</span>
-                        <h3 className="text-xl text-white mt-1">E contando...</h3>
-                        <p className="text-white/60 text-sm mt-2">
-                            Cada dia ao seu lado é um novo presente.
-                        </p>
+                        <h3 className="text-xl text-white mt-1 mb-8">E contando...</h3>
+
+                        {/* Living Counter with default date (Sept 25, 2023 based on '2 anos e 3 meses' example logic roughly? Or just use a prop if we had one) */}
+                        {/* Assuming a relationship start date. I'll use a placeholder date that the user should update via admin later or hardcode request */}
+                        <div className="mt-4">
+                            <LivingCounter startDate="2025-06-09" />
+                        </div>
                     </div>
                 </div>
             </section>

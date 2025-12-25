@@ -39,8 +39,17 @@ export async function middleware(request: NextRequest) {
     }
 
     // 🔒 Proteção da Rota Admin
-    if (request.nextUrl.pathname.startsWith('/admin') && !user) {
-        return NextResponse.redirect(new URL('/', request.url))
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+        if (!user) {
+            return NextResponse.redirect(new URL('/', request.url))
+        }
+
+        // Verify Admin Email if configured
+        const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+        if (adminEmail && user.email !== adminEmail) {
+            // Logged in but not admin -> Redirect to home
+            return NextResponse.redirect(new URL('/', request.url));
+        }
     }
 
     // 🔒 Redirecionar se já estiver logado e tentar acessar login

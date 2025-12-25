@@ -65,6 +65,7 @@ export function OptionsMenuWithReason() {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const supabase = createClient();
 
     useEffect(() => {
@@ -84,6 +85,9 @@ export function OptionsMenuWithReason() {
         async function checkUser() {
             const { data: { user } } = await supabase.auth.getUser();
             setIsLoggedIn(!!user);
+
+            const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+            setIsAdmin(!!user && (!adminEmail || user.email === adminEmail));
         }
 
         fetchReasons();
@@ -116,6 +120,7 @@ export function OptionsMenuWithReason() {
                 onShowReason={showReason}
                 onLogin={() => setIsLoginOpen(true)}
                 isLoggedIn={isLoggedIn}
+                isAdmin={isAdmin}
             />
 
             <LoginModal

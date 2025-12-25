@@ -8,9 +8,10 @@ interface OptionsMenuProps {
     onShowReason?: () => void;
     onLogin?: () => void;
     isLoggedIn?: boolean;
+    isAdmin?: boolean;
 }
 
-export function OptionsMenu({ onShowReason, onLogin, isLoggedIn = false }: OptionsMenuProps) {
+export function OptionsMenu({ onShowReason, onLogin, isLoggedIn = false, isAdmin = false }: OptionsMenuProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -63,13 +64,15 @@ export function OptionsMenu({ onShowReason, onLogin, isLoggedIn = false }: Optio
 
                             {/* Login / Admin */}
                             {isLoggedIn ? (
-                                <Link
-                                    href="/admin"
-                                    onClick={() => setIsOpen(false)}
-                                    className="flex items-center gap-3 px-3 py-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                                >
-                                    <span className="text-sm font-medium pl-1">Acessar Admin</span>
-                                </Link>
+                                isAdmin ? (
+                                    <Link
+                                        href="/admin"
+                                        onClick={() => setIsOpen(false)}
+                                        className="flex items-center gap-3 px-3 py-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                                    >
+                                        <span className="text-sm font-medium pl-1">Acessar Admin</span>
+                                    </Link>
+                                ) : null
                             ) : (
                                 <button
                                     onClick={() => {

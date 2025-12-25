@@ -57,6 +57,49 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-serif);
+  --font-handwriting: var(--font-handwriting);
+}
+
+@keyframes pulse-heart {
+  0% {
+    transform: scale(1);
+  }
+
+  15% {
+    transform: scale(1.15);
+  }
+
+  30% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.15);
+  }
+
+  60% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-pulse-heart {
+  animation: pulse-heart 1.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
 .font-serif-letter {
   font-family: var(--font-serif), Georgia, serif;
 }
