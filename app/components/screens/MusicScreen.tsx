@@ -62,7 +62,7 @@ export function MusicScreen({ isActive }: MusicScreenProps) {
 
         // Define global callback
         (window as any).onYouTubeIframeAPIReady = () => {
-            if (activeTab === 'music' || true) { // Initialize regardless to be ready
+            if (isActive || true) { // Initialize regardless to be ready
                 createPlayer();
             }
         };
