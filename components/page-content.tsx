@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Reorder } from 'framer-motion';
 import { Memory } from "@/components/carousel/memory-card";
 import { StackCarousel } from "@/components/carousel/stack";
@@ -51,7 +51,7 @@ export function PageContent({ initialMemories, content, hasRealMemories }: PageC
         setIsEditMode(enabled);
     };
 
-    const sections: Record<string, JSX.Element> = {
+    const sections: Record<string, React.JSX.Element> = {
         hero: (
             <section key="hero" className="min-h-screen flex flex-col items-center justify-center p-3">
                 <div className="w-full max-w-md text-center space-y-8">
