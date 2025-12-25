@@ -16,6 +16,7 @@ export function LivingCounter({ startDate }: LivingCounterProps) {
         hours: 0,
         minutes: 0,
         seconds: 0,
+        milliseconds: 0,
         moons: 0,
         seasons: 0,
         heartbeats: 0,
@@ -29,27 +30,37 @@ export function LivingCounter({ startDate }: LivingCounterProps) {
             const diff = now.getTime() - start.getTime();
 
             // Basic Time Units
-            const seconds = Math.floor(diff / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const days = Math.floor(hours / 24);
+            const secondsTotal = Math.floor(diff / 1000);
+            const minutesTotal = Math.floor(secondsTotal / 60);
 
-            // Romantic Stats
-            // Lua cheia a cada ~29.53 dias
-            const moons = (days / 29.53).toFixed(1);
+            const moons = (diff / (1000 * 60 * 60 * 24 * 29.53)).toFixed(1);
+            const heartbeats = (minutesTotal * 80).toLocaleString('pt-BR');
+            const seasons = Math.floor(diff / (1000 * 60 * 60 * 24 * 91.25));
 
-            // Batimentos: média de 80 bpm
-            // 80 batimentos * minutos vividos
-            const heartbeats = (minutes * 80).toLocaleString('pt-BR');
-
-            // Estações: ~91.25 dias por estação
-            const seasons = Math.floor(days / 91.25);
-
-            // Years/Months/Days calculation for display
             let y = now.getFullYear() - start.getFullYear();
             let m = now.getMonth() - start.getMonth();
             let d = now.getDate() - start.getDate();
+            let h = now.getHours() - start.getHours();
+            let min = now.getMinutes() - start.getMinutes();
+            let s = now.getSeconds() - start.getSeconds();
+            let ms = now.getMilliseconds() - start.getMilliseconds();
 
+            if (ms < 0) {
+                s--;
+                ms += 1000;
+            }
+            if (s < 0) {
+                min--;
+                s += 60;
+            }
+            if (min < 0) {
+                h--;
+                min += 60;
+            }
+            if (h < 0) {
+                d--;
+                h += 24;
+            }
             if (d < 0) {
                 m--;
                 const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
@@ -64,91 +75,179 @@ export function LivingCounter({ startDate }: LivingCounterProps) {
                 years: y,
                 months: m,
                 days: d,
-                hours: now.getHours(),
-                minutes: now.getMinutes(),
-                seconds: now.getSeconds(),
+                hours: h,
+                minutes: min,
+                seconds: s,
+                milliseconds: ms,
                 moons: Number(moons),
                 seasons,
-                heartbeats: Number(heartbeats.replace(/\./g, '')), // Keep number for now
+                heartbeats: Number(heartbeats.replace(/\./g, '')),
             });
         };
 
-        const timer = setInterval(updateStats, 1000);
+        const timer = setInterval(updateStats, 41); // ~24fps update for smooth milliseconds
         updateStats();
 
         return () => clearInterval(timer);
     }, [startDate]);
 
+    // Format numbers
+    const formattedHours = stats.hours.toString().padStart(2, '0');
+    const formattedMinutes = stats.minutes.toString().padStart(2, '0');
+    const formattedSeconds = stats.seconds.toString().padStart(2, '0');
+    const formattedMs = stats.milliseconds.toString().padStart(3, '0');
+
     return (
-        <div className="w-full max-w-lg mx-auto bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-6 md:p-8 space-y-8">
-            {/* Header with Main Counter */}
-            <div className="text-center space-y-2">
-                <h3 className="text-white/60 text-sm font-medium uppercase tracking-widest">
+        <div className="w-full max-w-6xl mx-auto flex flex-col items-center justify-center space-y-12 py-8 relative">
+
+            {/* Background Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-pink-500/20 blur-[100px] rounded-full pointer-events-none" />
+
+            {/* Main Time Counter */}
+            <div className="relative z-10 text-center space-y-4">
+                <motion.h3
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-white/50 text-xs md:text-sm font-medium uppercase tracking-[0.3em]"
+                >
                     Tempo de Nós
-                </h3>
-                <div className="flex flex-wrap justify-center gap-3 text-white font-serif">
-                    <span className="text-2xl md:text-3xl">
-                        {stats.years}<span className="text-base text-white/40 ml-1">anos</span>
-                    </span>
-                    <span className="text-2xl md:text-3xl">
-                        {stats.months}<span className="text-base text-white/40 ml-1">meses</span>
-                    </span>
-                    <span className="text-2xl md:text-3xl">
-                        {stats.days}<span className="text-base text-white/40 ml-1">dias</span>
-                    </span>
+                </motion.h3>
+
+                <div className="flex flex-wrap justify-center items-baseline gap-4 md:gap-8 font-serif text-white drop-shadow-2xl">
+                    {/* Years */}
+                    <div className="flex flex-col items-center">
+                        <span className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+                            {stats.years}
+                        </span>
+                        <span className="text-[10px] md:text-xs text-white/40 font-sans tracking-widest mt-2">ANOS</span>
+                    </div>
+                    {/* Months */}
+                    <div className="flex flex-col items-center">
+                        <span className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+                            {stats.months}
+                        </span>
+                        <span className="text-[10px] md:text-xs text-white/40 font-sans tracking-widest mt-2">MESES</span>
+                    </div>
+                    {/* Days */}
+                    <div className="flex flex-col items-center">
+                        <span className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+                            {stats.days}
+                        </span>
+                        <span className="text-[10px] md:text-xs text-white/40 font-sans tracking-widest mt-2">DIAS</span>
+                    </div>
+
+                    {/* Divider for smaller units */}
+                    <div className="hidden lg:block w-px h-16 bg-white/10 mx-2"></div>
+
+                    {/* Hours */}
+                    <div className="flex flex-col items-center">
+                        <span className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+                            {formattedHours}
+                        </span>
+                        <span className="text-[10px] md:text-xs text-white/40 font-sans tracking-widest mt-2">HORAS</span>
+                    </div>
+                    {/* Minutes */}
+                    <div className="flex flex-col items-center">
+                        <span className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+                            {formattedMinutes}
+                        </span>
+                        <span className="text-[10px] md:text-xs text-white/40 font-sans tracking-widest mt-2">MINUTOS</span>
+                    </div>
+                    {/* Seconds */}
+                    <div className="flex flex-col items-center">
+                        <span className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+                            {formattedSeconds}
+                        </span>
+                        <span className="text-[10px] md:text-xs text-white/40 font-sans tracking-widest mt-2">SEGUNDOS</span>
+                    </div>
+
+                    {/* Milliseconds */}
+                    <div className="flex flex-col items-center">
+                        <span className="text-2xl md:text-4xl font-bold text-pink-400/80 font-mono mt-2 md:mt-4">
+                            .{formattedMs}
+                        </span>
+                        <span className="text-[10px] md:text-xs text-pink-400/40 font-sans tracking-widest mt-2">MS</span>
+                    </div>
                 </div>
             </div>
 
-            {/* Central Pulsing Heart */}
-            <div className="flex justify-center my-8">
-                <div className="relative">
-                    {/* Ripple Effect */}
-                    <div className="absolute inset-0 bg-pink-500/30 rounded-full animate-ping opacity-75" />
-                    <div className="relative bg-gradient-to-br from-pink-500 to-rose-600 p-4 rounded-full shadow-[0_0_30px_rgba(236,72,153,0.5)] animate-pulse-heart">
-                        <Heart className="w-8 h-8 text-white fill-white" />
+            {/* Realistic Heartbeat */}
+            <div className="relative z-10 py-4">
+                <motion.div
+                    animate={{
+                        scale: [1, 1.15, 1, 1.15, 1],
+                    }}
+                    transition={{
+                        duration: 1.2, // ~50bpm resting rate feel, realistic pattern
+                        repeat: Infinity,
+                        times: [0, 0.15, 0.3, 0.45, 1], // The "lub-dub" rhythm
+                        ease: "easeInOut"
+                    }}
+                    className="relative"
+                >
+                    {/* Inner Glow */}
+                    <div className="absolute inset-0 bg-rose-500 blur-xl opacity-40 rounded-full scale-150" />
+
+                    <div className="relative bg-gradient-to-br from-rose-500 to-pink-600 p-6 rounded-full shadow-2xl border border-white/10 flex items-center justify-center">
+                        <Heart className="w-10 h-10 md:w-12 md:h-12 text-white fill-white drop-shadow-lg" />
                     </div>
-                </div>
+                </motion.div>
+
+                <motion.div
+                    animate={{ opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    className="mt-6 text-center"
+                >
+                    <span className="text-[10px] uppercase tracking-widest text-rose-300/60 block">
+                        Vivo e Pulsante
+                    </span>
+                </motion.div>
             </div>
 
-            {/* Romantic Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                {/* Heartbeats */}
-                <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors group">
-                    <div className="text-pink-400 mb-2 group-hover:scale-110 transition-transform duration-300">❤️</div>
-                    <div className="text-xl font-bold text-white mb-1">
-                        {stats.heartbeats.toLocaleString('pt-BR')}
-                    </div>
-                    <div className="text-xs text-white/50">
-                        Batimentos compartilhados
-                    </div>
-                </div>
-
-                {/* Moons */}
-                <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors group">
-                    <div className="text-indigo-400 mb-2 group-hover:scale-110 transition-transform duration-300">🌕</div>
-                    <div className="text-xl font-bold text-white mb-1">
-                        {stats.moons}
-                    </div>
-                    <div className="text-xs text-white/50">
-                        Luas cheias juntos
-                    </div>
-                </div>
-
-                {/* Seasons */}
-                <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors group">
-                    <div className="text-amber-400 mb-2 group-hover:scale-110 transition-transform duration-300">🍂</div>
-                    <div className="text-xl font-bold text-white mb-1">
-                        {stats.seasons}
-                    </div>
-                    <div className="text-xs text-white/50">
-                        Estações vividas
-                    </div>
-                </div>
+            {/* Cinematic Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-2xl px-4 relative z-10">
+                <StatCard
+                    emoji="❤️"
+                    value={stats.heartbeats.toLocaleString('pt-BR')}
+                    label="Batimentos"
+                    sublabel="Corações sintonizados"
+                    delay={0.1}
+                />
+                <StatCard
+                    emoji="🌕"
+                    value={stats.moons}
+                    label="Luas Cheias"
+                    sublabel="Noites iluminadas"
+                    delay={0.2}
+                />
+                <StatCard
+                    emoji="🍂"
+                    value={stats.seasons.toString()}
+                    label="Estações"
+                    sublabel="Ciclos vividos"
+                    delay={0.3}
+                />
             </div>
-
-            <p className="text-center text-xs text-white/30 italic mt-4">
-                *Cálculo aproximado baseado em 80 bpm.
-            </p>
         </div>
+    );
+}
+
+function StatCard({ emoji, value, label, sublabel, delay }: { emoji: string, value: string | number, label: string, sublabel: string, delay: number }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay, duration: 0.5 }}
+            className="group relative overflow-hidden"
+        >
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-100 rounded-2xl border border-white/5 transition-all duration-500 group-hover:border-white/10 group-hover:bg-white/10" />
+
+            <div className="relative p-5 text-center flex flex-col items-center gap-1">
+                <span className="text-2xl mb-1 filter grayscale group-hover:grayscale-0 transition-all duration-500">{emoji}</span>
+                <span className="text-2xl font-bold text-white font-serif tracking-tight">{value}</span>
+                <span className="text-xs font-bold text-white/60 uppercase tracking-wider">{label}</span>
+                <span className="text-[10px] text-white/30 font-light">{sublabel}</span>
+            </div>
+        </motion.div>
     );
 }

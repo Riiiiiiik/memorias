@@ -9,6 +9,7 @@ import { OptionsMenuWithReason } from "@/components/ui/options-menu-with-reason"
 import { LivingCounter } from "@/components/ui/living-counter";
 import { createClient } from '@/lib/supabase/client';
 import { LoginModal } from "@/components/auth/login-modal";
+import { LoveReasonButton } from "@/app/components/love-reason-button";
 
 interface PageContentProps {
     initialMemories: Memory[];
@@ -50,6 +51,9 @@ export function PageContent({ initialMemories, content, hasRealMemories }: PageC
                 <div className="absolute top-4 left-4 z-[150]">
                     <OptionsMenuWithReason />
                 </div>
+
+                {/* Floating "Reason" Button */}
+                <LoveReasonButton />
 
                 <div className="w-full max-w-md text-center space-y-8">
                     <div className="space-y-2 mb-8 z-20 relative">

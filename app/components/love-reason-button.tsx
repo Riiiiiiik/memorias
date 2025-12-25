@@ -11,12 +11,47 @@ type Reason = {
 };
 
 // Fallback reasons if DB is empty or fails
+// Fallback reasons if DB is empty or fails
 const FALLBACK_REASONS = [
-    "Porque você faz o melhor café.",
-    "Pelo jeito que você ri dos meus bugs no código.",
-    "Porque você me apoia nos meus projetos.",
-    "Porque cada dia com você é um presente.",
-    "Pela sua risada que ilumina tudo."
+    "Te amo por causa do teu sorriso, que ilumina os meus dias mesmo quando tudo parece nublado.",
+    "Te amo porque a tua voz tem o poder de me acalmar, e o som da tua risada é o meu favorito no mundo.",
+    "Te amo porque contigo eu aprendi o que é ter um lar — não um lugar, mas alguém onde eu quero sempre estar.",
+    "Te amo porque o teu abraço é o meu refúgio, o único lugar onde o tempo parece parar.",
+    "Te amo porque tu transformas qualquer momento simples em algo inesquecível.",
+    "Te amo porque teus olhos falam comigo de um jeito que ninguém mais entende.",
+    "Te amo porque acreditas em mim mesmo quando eu não acredito.",
+    "Te amo por esse teu coração enorme, que ama sem medo e cuida sem medida.",
+    "Te amo porque perto de ti, eu sou a melhor versão de mim.",
+    "Te amo porque tu fazes da vida algo mais leve.",
+    "Te amo porque teu toque me traz calma e teu riso me devolve alegria.",
+    "Te amo porque teus gestos, mesmo os pequenos, carregam carinho.",
+    "Te amo porque me entendes até no silêncio.",
+    "Te amo porque teu amor é sincero, sereno e verdadeiro.",
+    "Te amo porque tu sabes me olhar do jeito certo, no momento certo.",
+    "Te amo porque contigo aprendi que amar também é ser paciente.",
+    "Te amo porque me fazes rir mesmo quando estou tentando ficar bravo.",
+    "Te amo porque tu tornas os meus dias mais coloridos.",
+    "Te amo porque teu carinho me faz sentir protegido.",
+    "Te amo porque tu és minha paz no meio do caos.",
+    "Te amo porque tu acreditas na gente com uma fé que me inspira.",
+    "Te amo porque teus defeitos me lembram que somos humanos e reais.",
+    "Te amo porque tu me escolhes todos os dias, e isso é o que mais importa.",
+    "Te amo porque o teu cheiro já é parte de mim.",
+    "Te amo porque tu sabes me acalmar sem precisar dizer nada.",
+    "Te amo porque o teu silêncio também é companhia.",
+    "Te amo porque a tua presença preenche o meu mundo.",
+    "Te amo porque contigo aprendi o valor da parceria.",
+    "Te amo porque tu me ensinas o que é amor de verdade sem precisar de palavras bonitas.",
+    "Te amo porque tu és meu lar, meu abrigo, meu lugar favorito.",
+    "Te amo porque tu és tudo aquilo que eu nem sabia que precisava.",
+    "Te amo porque contigo os meus sonhos param de ser apenas sonhos.",
+    "Te amo porque tu me olhas com ternura mesmo quando estou de mau humor.",
+    "Te amo porque me aceitas exatamente como eu sou.",
+    "Te amo porque tu dás sentido aos meus dias.",
+    "Te amo porque contigo o amor deixou de ser um sonho e virou realidade.",
+    "Te amo porque tu és a minha paz, o meu caos bonito.",
+    "Te amo porque cada segundo ao teu lado vale uma vida inteira.",
+    "Te amo porque tu existes — e só isso já é motivo suficiente."
 ];
 
 export function LoveReasonButton() {
@@ -70,21 +105,29 @@ export function LoveReasonButton() {
         <>
             {/* Floating Button */}
             <motion.button
-                className="fixed bottom-6 right-6 z-50 group flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 px-6 py-3 rounded-full shadow-2xl transition-all"
+                className="fixed bottom-6 left-6 z-50 group flex items-center justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 w-14 h-14 rounded-full shadow-2xl transition-all"
                 onClick={showReason}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                    delay: 1
+                }}
             >
-                <span className="text-white/90 text-sm font-medium tracking-wide">Precisa de um motivo?</span>
                 <div className="relative">
-                    <Heart className="w-5 h-5 text-pink-500 fill-pink-500/20 group-hover:scale-110 transition-transform" />
+                    <Heart className="w-6 h-6 text-pink-500 fill-pink-500/20 group-hover:fill-pink-500 transition-colors duration-300" />
                     <motion.div
-                        className="absolute -top-1 -right-1"
-                        animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                        transition={{ repeat: Infinity, duration: 2 }}
+                        className="absolute -top-2 -right-2"
+                        animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.5, 1, 0.5],
+                            rotate: [0, 15, -15, 0]
+                        }}
+                        transition={{ repeat: Infinity, duration: 2.5 }}
                     >
                         <Sparkles className="w-3 h-3 text-yellow-300" />
                     </motion.div>
