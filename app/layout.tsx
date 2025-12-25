@@ -27,6 +27,23 @@ const dancingScript = Dancing_Script({
 export const metadata: Metadata = {
   title: "Memorias",
   description: "Uma coleção de nossos momentos especiais",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Memorias",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1, // Start as strictly app-like
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -37,7 +54,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${merriweather.variable} ${dancingScript.variable} antialiased bg-black min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} ${merriweather.variable} ${dancingScript.variable} antialiased bg-black min-h-screen overscroll-none`}
       >
         {children}
       </body>
