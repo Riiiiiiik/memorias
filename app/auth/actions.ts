@@ -20,8 +20,8 @@ export async function login(formData: FormData) {
         return { error: 'Credenciais inválidas' }
     }
 
-    revalidatePath('/admin', 'layout')
-    redirect('/admin')
+    revalidatePath('/', 'layout')
+    redirect('/')
 }
 
 export async function logout() {

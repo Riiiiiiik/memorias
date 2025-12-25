@@ -57,7 +57,7 @@ export async function middleware(request: NextRequest) {
 
     // 🔒 Redirecionar se já estiver logado e tentar acessar login
     if (request.nextUrl.pathname.startsWith('/login') && user) {
-        return NextResponse.redirect(new URL('/admin', request.url))
+        return NextResponse.redirect(new URL('/', request.url))
     }
 
     return response
