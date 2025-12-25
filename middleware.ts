@@ -28,9 +28,19 @@ export async function middleware(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser()
 
+    // Public Routes (always allowed)
+    const isPublicRoute = request.nextUrl.pathname === '/' ||
+        request.nextUrl.pathname.startsWith('/api/') || // Allow APIs (they should handle their own auth if needed)
+        request.nextUrl.pathname.startsWith('/_next');
+
+    // If not public and not logged in, redirect to home (where the login modal is)
+    if (!isPublicRoute && !user) {
+        return NextResponse.redirect(new URL('/', request.url))
+    }
+
     // 🔒 Proteção da Rota Admin
     if (request.nextUrl.pathname.startsWith('/admin') && !user) {
-        return NextResponse.redirect(new URL('/login', request.url))
+        return NextResponse.redirect(new URL('/', request.url))
     }
 
     // 🔒 Redirecionar se já estiver logado e tentar acessar login

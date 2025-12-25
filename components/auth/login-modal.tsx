@@ -8,9 +8,10 @@ import { login } from '@/app/auth/actions';
 interface LoginModalProps {
     isOpen: boolean;
     onClose: () => void;
+    canClose?: boolean;
 }
 
-export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+export function LoginModal({ isOpen, onClose, canClose = true }: LoginModalProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -26,8 +27,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             setError(result.error);
             setLoading(false);
         } else {
-            // Redirect happens on server, but we can close modal just in case
-            // or wait for redirect
+            // Redirect happens on server
         }
     };
 
@@ -37,11 +37,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
                     {/* Backdrop */}
                     <motion.div
-                        className="absolute inset-0 bg-black/60 backdrop-blur-md"
+                        className={`absolute inset-0 bg-black/60 backdrop-blur-md ${canClose ? 'cursor-pointer' : ''}`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={onClose}
+                        onClick={canClose ? onClose : undefined}
                     />
 
                     {/* Modal */}
@@ -52,12 +52,14 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         exit={{ scale: 0.9, opacity: 0, y: 20 }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
                     >
-                        <button
-                            onClick={onClose}
-                            className="absolute top-4 right-4 p-2 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
+                        {canClose && (
+                            <button
+                                onClick={onClose}
+                                className="absolute top-4 right-4 p-2 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        )}
 
                         <div className="flex flex-col items-center mb-6">
                             <div className="p-3 bg-indigo-500/20 rounded-full mb-4 ring-1 ring-inset ring-indigo-500/50">

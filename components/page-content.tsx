@@ -15,16 +15,35 @@ interface PageContentProps {
 
 const SECTION_ORDER = ['hero', 'dedication', 'soundtrack', 'timeline'];
 
+import { createClient } from '@/lib/supabase/client';
+import { LoginModal } from "@/components/auth/login-modal";
+
+// ... imports
+
 export function PageContent({ initialMemories, content, hasRealMemories }: PageContentProps) {
     const [timelineSpacing, setTimelineSpacing] = useState(3);
+    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const supabase = createClient();
 
-    // Load saved spacing from localStorage (keeping this as it might be useful preference)
     useEffect(() => {
+        async function checkAuth() {
+            const { data: { user } } = await supabase.auth.getUser();
+            setIsLoggedIn(!!user);
+            setIsCheckingAuth(false);
+        }
+
+        checkAuth();
+
         const savedSpacing = localStorage.getItem('timeline-spacing');
         if (savedSpacing) {
             setTimelineSpacing(parseInt(savedSpacing));
         }
-    }, []);
+    }, [supabase]);
+
+    if (isCheckingAuth) {
+        return null; // Or a loading spinner
+    }
 
     const sections: Record<string, React.JSX.Element> = {
         hero: (
@@ -183,7 +202,21 @@ export function PageContent({ initialMemories, content, hasRealMemories }: PageC
 
     return (
         <div className="relative z-10 w-full max-w-5xl mx-auto min-h-screen">
-            {orderedSections}
+            {isLoggedIn ? (
+                orderedSections
+            ) : (
+                <>
+                    {/* Blurred background preview or just the modal */}
+                    <div className="blur-xl pointer-events-none opacity-50">
+                        {sections.hero}
+                    </div>
+                    <LoginModal
+                        isOpen={true}
+                        onClose={() => { }}
+                        canClose={false}
+                    />
+                </>
+            )}
         </div>
     );
 }
