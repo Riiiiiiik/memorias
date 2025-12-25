@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BottomNav } from "./BottomNav";
 import { HomeScreen } from "./screens/HomeScreen";
 import { TimerScreen } from "./screens/TimerScreen";
 import { GalleryScreen } from "./screens/GalleryScreen";
 import { MusicScreen } from "./screens/MusicScreen";
 import { StoryScreen } from "./screens/StoryScreen";
+import { APP_VERSION } from "@/lib/version";
+import { createClient } from "@/lib/supabase/client";
 
 interface MobileAppShellProps {
     initialMemories: any[];
@@ -19,6 +21,29 @@ type TabId = "home" | "story" | "timer" | "gallery" | "music";
 
 export function MobileAppShell({ initialMemories, content, hasRealMemories, stories }: MobileAppShellProps) {
     const [activeTab, setActiveTab] = useState<TabId>("home");
+
+    // Strict Login Enforcement
+    useEffect(() => {
+        const checkVersionAndAuth = async () => {
+            const storedVersion = localStorage.getItem('app_version');
+
+            if (storedVersion !== APP_VERSION) {
+                console.log('App updated. Forcing logout for strict security.');
+
+                // 1. Update stored version
+                localStorage.setItem('app_version', APP_VERSION);
+
+                // 2. Clear Supabase Session
+                const supabase = createClient();
+                await supabase.auth.signOut();
+
+                // 3. Force page reload to trigger middleware redirection to /login
+                window.location.href = '/login';
+            }
+        };
+
+        checkVersionAndAuth();
+    }, []);
 
     return (
         <div className="flex justify-center min-h-screen">
