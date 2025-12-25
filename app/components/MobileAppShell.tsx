@@ -24,32 +24,57 @@ export function MobileAppShell({ initialMemories, content, hasRealMemories, stor
     const [showUpdateModal, setShowUpdateModal] = useState(false);
 
     // Strict Login Enforcement
+    // Strict Login Enforcement & PWA Update Check
     useEffect(() => {
-        const checkVersionAndAuth = async () => {
-            const storedVersion = localStorage.getItem('app_version');
+        const checkVersion = async () => {
+            try {
+                // Fetch version from server-side API to bypass client cache
+                // cache: 'no-store' ensures we always hit the server
+                const res = await fetch('/api/version', { cache: 'no-store' });
+                if (!res.ok) throw new Error('Failed to fetch version');
 
-            if (storedVersion !== APP_VERSION) {
-                console.log('App updated. Forcing logout for strict security.');
+                const data = await res.json();
+                const serverVersion = data.version;
 
-                // Show modal first
-                setShowUpdateModal(true);
+                const storedVersion = localStorage.getItem('app_version');
 
-                // Wait 3 seconds for user to see message
-                setTimeout(async () => {
-                    // 1. Update stored version
-                    localStorage.setItem('app_version', APP_VERSION);
+                // Logic:
+                // 1. If we have a stored version and it differs from server -> UPDATE
+                // 2. If we don't have a stored version -> First run, just set it
+                if (storedVersion && serverVersion && storedVersion !== serverVersion) {
+                    console.log(`[PWA] Update detected: ${storedVersion} -> ${serverVersion}`);
+                    setShowUpdateModal(true);
 
-                    // 2. Clear Supabase Session
-                    const supabase = createClient();
-                    await supabase.auth.signOut();
+                    setTimeout(async () => {
+                        const supabase = createClient();
+                        await supabase.auth.signOut();
+                        localStorage.setItem('app_version', serverVersion);
 
-                    // 3. Force page reload to trigger middleware redirection to /login
-                    window.location.href = '/login';
-                }, 3000); // 3 seconds delay
+                        // Force hard reload to get new PWA assets
+                        window.location.href = '/login';
+                    }, 3000);
+                } else if (!storedVersion && serverVersion) {
+                    localStorage.setItem('app_version', serverVersion);
+                }
+            } catch (error) {
+                console.error("[PWA] Failed to check version:", error);
             }
         };
 
-        checkVersionAndAuth();
+        // Check on mount
+        checkVersion();
+
+        // Check when app comes to foreground (switching apps on mobile)
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                checkVersion();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
     }, []);
 
     return (
